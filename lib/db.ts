@@ -204,14 +204,7 @@ function seed(d: Database.Database) {
 
   if (meta?.value === SEED_VERSION) return;
 
-  // Check if any groups have user tags — if so, leave them alone (additive seed).
-  const tagged = d.prepare('SELECT COUNT(*) AS n FROM group_tags').get() as { n: number };
-
-  if (tagged.n === 0) {
-    // Safe to wipe and re-seed.
-    d.prepare('DELETE FROM groups').run();
-  }
-
+  // Additive seed only — never delete existing groups. INSERT OR IGNORE skips duplicates.
   const now = Date.now();
   const insertOrIgnore = d.prepare(
     'INSERT OR IGNORE INTO groups (name, color, emoji, sort_order, created_at) VALUES (?, ?, ?, ?, ?)',

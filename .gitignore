@@ -10,6 +10,8 @@ out/
 # production
 build/
 dist/
+# allow Next.js API route named "build"
+!app/api/**/build/
 
 # local env
 .env
